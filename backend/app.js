@@ -2,12 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+const helmet = require("helmet");
+const dotenv = require('dotenv').config();
+console.log(dotenv.parsed)
 const userRoutes = require('./routes/user.js');
 const saucesRoutes = require('./routes/sauces.js');
 
 // COONEXION A LA BASE DE DONNEES
-mongoose.connect('mongodb+srv://AwaS:Ocr1000A@cluster0.lulb4.mongodb.net/test?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
+mongoose.connect(process.env.MONGODB_URI,
+  { dbName: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS,
+    useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
   })
@@ -24,7 +30,7 @@ const app = express();
 });
 
   app.use(bodyParser.json());
-
+  app.use(helmet());
 
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', saucesRoutes)
